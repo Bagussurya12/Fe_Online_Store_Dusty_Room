@@ -11,7 +11,7 @@
           light
           :items="itemSearch"
           item-text="title"
-          item-value="id"
+          item-value="_id"
           v-model="selectedSearch"
           return-object
           hide-no-data
@@ -28,9 +28,9 @@
               <v-list-item
                 v-for="(category, index) in categories"
                 :key="index"
-                :value="category.id"
-                :disabled="category.id == categoryId"
-                @change="updateCategoryId(category.id)"
+                :value="category._id"
+                :disabled="category._id == categoryId"
+                @change="updateCategoryId(category._id)"
               >
                 <v-list-item-title>{{ category.title }}</v-list-item-title>
               </v-list-item>
@@ -48,10 +48,11 @@
       >
         <v-card class="mx-auto" max-width="344">
           <v-img
-            :src="require(`@/assets/images/products/${product.thumbnail}`)"
+            :src="require(`../../Beckend-store/images/${product.image}`)"
             height="200px"
             cover
           ></v-img>
+          {{ products.image }}
 
           <v-card-title :title="product.title">
             {{ product.title }}
@@ -101,8 +102,10 @@ export default {
     }
   },
   methods: {
-    ...mapActions('products', {
-      updateCategoryId: 'updateCategoryId',
+    ...mapActions({
+      updateCategoryId: 'products/updateCategoryId',
+      fetchProducts: 'products/fetchProducts',
+      fetchCategories: 'products/fetchCategories',
     }),
     resetSearchCategory() {
       this.categoryId = false
@@ -135,6 +138,10 @@ export default {
         })
       }, 1000)
     },
+  },
+  mounted() {
+    this.fetchProducts()
+    this.fetchCategories()
   },
 }
 </script>

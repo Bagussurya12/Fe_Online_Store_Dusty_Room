@@ -1,6 +1,12 @@
 <template>
   <v-app dark color="black">
-    <v-navigation-drawer v-model="sideDrawer" color="black" dark app>
+    <v-navigation-drawer
+      disable-resize-watcher
+      v-model="sideDrawer"
+      color="black"
+      dark
+      app
+    >
       <v-list>
         <v-list-item
           v-for="(item, i) in items"
@@ -24,7 +30,7 @@
     </v-app-bar>
 
     <v-main>
-      <v-container>
+      <v-container fill-height fluid>
         <Nuxt />
       </v-container>
     </v-main>
@@ -71,6 +77,24 @@ export default {
       // rightDrawer: false,
       title: 'Dusty Store',
     }
+  },
+  methods: {
+    isWelcomeScreen() {
+      if (!localStorage.welcomeScreen) {
+        if (this.$router.currentRoute.path == '/') {
+          this.$router.push('/login')
+        }
+      }
+    },
+  },
+  watch: {
+    $route() {
+      this.isWelcomeScreen()
+    },
+  },
+  mounted() {
+    localStorage.setItem('welcomeScreen', true)
+    this.isWelcomeScreen()
   },
 }
 </script>
