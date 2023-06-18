@@ -53,7 +53,7 @@ export default {
         {
           icon: 'mdi-view-dashboard-variant',
           title: 'Dashboard',
-          to: '/inspire',
+          to: '/dashboard',
         },
         {
           icon: 'mdi-account',
@@ -81,7 +81,10 @@ export default {
   methods: {
     isWelcomeScreen() {
       if (!localStorage.welcomeScreen) {
-        if (this.$router.currentRoute.path == '/') {
+        if (
+          this.$router.currentRoute.path != '/register' &&
+          this.$router.currentRoute.path != '/login'
+        ) {
           this.$router.push('/login')
         }
       }
@@ -93,7 +96,7 @@ export default {
     },
   },
   mounted() {
-    localStorage.setItem('welcomeScreen', true)
+    // localStorage.setItem('welcomeScreen', true)
     this.isWelcomeScreen()
   },
 }

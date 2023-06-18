@@ -69,7 +69,13 @@
 
             <v-spacer></v-spacer>
 
-            <v-btn small color="black" @click="show = !show" :ripple="true">
+            <v-btn
+              small
+              color="black"
+              @click="show = !show"
+              :ripple="true"
+              dark
+            >
               Desc
             </v-btn>
           </v-card-actions>
@@ -146,10 +152,10 @@ export default {
 }
 </script>
 <style>
-.v-btn.v-btn {
+/* .v-btn.v-btn {
   background-color: black;
   color: white;
-}
+} */
 .produk {
   padding: 5px;
 }
