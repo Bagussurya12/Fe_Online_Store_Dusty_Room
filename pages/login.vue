@@ -36,13 +36,18 @@
         <v-btn to="/register" plain class="text-btn">Register</v-btn>
       </p>
       <v-alert color="red lighten-2" dark v-if="isError">
-        {{ message }}
+        {{ $t(message) }}
       </v-alert>
     </v-col>
   </v-row>
 </template>
 <script>
+import { mapMutations } from 'vuex'
 export default {
+  middleware: ['unauthenticated'],
+  head: {
+    title: 'Login',
+  },
   data() {
     return {
       isDisable: false,
@@ -55,21 +60,30 @@ export default {
     }
   },
   methods: {
+    ...mapMutations('auth', {
+      setFullname: 'setFullname',
+      setAccessToken: 'setAccessToken',
+      setRefreshToken: 'setRefreshToken',
+    }),
     storeWelcomeScreen() {
       localStorage.setItem('welcomeScreen', true)
     },
     onSubmit() {
-      ;(this.isDisable = true), console.log(this.form)
+      this.isDisable = true
       this.$axios
         .$post('http://localhost:3000/auth/login', this.form)
         .then((response) => {
           this.isDisable = false
+          // Login Success
           // Store Passed Welcome
           if (!localStorage.welcomeScreen) {
             this.storeWelcomeScreen()
           }
+          // Store Auth data
+          this.setFullname(response.fullname)
+          this.setAccessToken(response.accessToken)
+          this.setRefreshToken(response.refreshToken)
 
-          // console.log(response)
           // Redirect TO login Page
           this.$router.push('/dashboard')
         })
@@ -79,6 +93,12 @@ export default {
           this.isDisable = false
         })
     },
+  },
+  mounted() {
+    if (this.$route.params.message === 'AUTH_REQUIRED') {
+      this.message = this.$route.params.message
+      this.isError = true
+    }
   },
 }
 </script>

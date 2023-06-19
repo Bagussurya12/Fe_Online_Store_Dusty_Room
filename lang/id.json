@@ -1,0 +1,15 @@
+{
+  "WRONG_PASSWORD": "PASSWORD SALAH",
+  "USER_NOT_FOUND": "USER TIDAK DI TEMUKAN",
+  "EMAIL_NOT_FOUND": "EMAIL TIDAK DI TEMUKAN",
+  "AUTH_REQUIRED": "Untuk Mengakses Anda Harus Login",
+  "Full_Name_Is_Required": "Fullname Harus Di Isi",
+  "Email_Is_Required": "Email Harus Di Isi",
+  "Email_InValid": "Format Email Tidak Valid",
+  "EMAIL_EXIST": "Email Telah digunakan",
+  "Phone_Number_Is_Required": "Nomor Handphone Harus Di isi",
+  "Addres_Is_Required": "Alamat Wajib Di Isi",
+  "Password_Is_Required": "Password Harus Di Isi",
+  "Password_Must_Be_at_Least_7_Character": "Password Minimal 7 Karakter",
+  "Re_Password_Must_Be_Same_With_Password": "Re-Password Harus Sama Dengan Password"
+}
