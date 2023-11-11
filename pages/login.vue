@@ -1,19 +1,35 @@
 <template>
-  <v-row>
-    <v-col cols="10" offset="1" md="4" offset-md="4">
-      <v-card class="mb-3">
-        <v-toolbar color="black" dark>Login</v-toolbar>
+  <v-row class="mt-5 d-flex flex-wrap">
+    <v-col cols="8">
+      <div>
+        <v-img
+          :src="require(`../assets/images/login2.jpg`)"
+          :width="900"
+          cover
+        ></v-img>
+      </div>
+    </v-col>
+    <v-col cols="3" class="mt-5 login">
+      <div class="d-flex justify-center mb-6">
+        <v-img
+          :src="require(`../assets/images/logo.png`)"
+          :width="200"
+          cover
+        ></v-img>
+      </div>
+      <v-card class="mb-3 mt-5" height="400px">
+        <v-toolbar color="black" dark><h3>Login</h3></v-toolbar>
         <v-card-text>
           <v-form>
             <v-text-field
               name="email"
-              label="email"
+              label="Email"
               type="email"
               v-model="form.email"
             />
             <v-text-field
               name="password"
-              label="password"
+              label="Password"
               type="password"
               v-model="form.password"
             />
@@ -21,7 +37,14 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="black" dark @click="onSubmit" :disabled="isDisable">
+          <v-btn
+            color="black"
+            dark
+            @click="onSubmit"
+            :disabled="isDisable"
+            block
+            class="mb-1 mr-3"
+          >
             <span v-if="!isDisable">Login</span>
             <v-progress-circular
               v-else
@@ -30,11 +53,16 @@
             ></v-progress-circular>
           </v-btn>
         </v-card-actions>
+        <div class="d-flex justify-center mb-3">
+          <p class="font-weight-bold">
+            Belum Memiliki Akun?
+            <v-btn variant="text" to="/register" plain color="red"
+              >Daftar</v-btn
+            >
+          </p>
+        </div>
       </v-card>
-      <p>
-        Do You Have an account?
-        <v-btn to="/register" plain class="text-btn">Register</v-btn>
-      </p>
+
       <v-alert color="red lighten-2" dark v-if="isError">
         {{ $t(message) }}
       </v-alert>
@@ -71,7 +99,7 @@ export default {
     onSubmit() {
       this.isDisable = true
       this.$axios
-        .$post('http://localhost:3000/auth/login', this.form)
+        .$post('/auth/login', this.form)
         .then((response) => {
           this.isDisable = false
           // Login Success
@@ -85,7 +113,7 @@ export default {
           this.setRefreshToken(response.refreshToken)
 
           // Redirect TO login Page
-          this.$router.push('/dashboard')
+          this.$router.push(`/`)
         })
         .catch((error) => {
           this.isError = true
@@ -105,5 +133,12 @@ export default {
 <style>
 .text-btn {
   font-weight: bold;
+  color: red;
+}
+.login {
+  padding-top: 30px;
+}
+.btn {
+  color: red;
 }
 </style>

@@ -25,7 +25,10 @@ export default {
   css: ['@/assets/main.scss'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [{ src: '~/plugins/persistedState.js', ssr: false }],
+  plugins: [
+    { src: '~/plugins/persistedState.js', ssr: false },
+    { src: '~/plugins/axiosInterceptors.js', ssr: false },
+  ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -41,6 +44,7 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     '@nuxtjs/i18n',
+    '@nuxtjs/dotenv',
   ],
   i18n: {
     langDir: 'lang/',
@@ -57,7 +61,7 @@ export default {
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: 'http://localhost:3000',
+    baseURL: process.env.API_URL,
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
@@ -81,5 +85,18 @@ export default {
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {},
+  build: {
+    // extend(config, { isClient }) {
+    //   // Tambahkan konfigurasi loader untuk file gambar
+    //   config.module.rules.push({
+    //     test: /\.(png|jpe?g|gif|svg|webp)$/,
+    //     loader: 'file-loader',
+    //     options: {
+    //       name: '[name].[hash:8].[ext]',
+    //       outputPath: 'img',
+    //       publicPath: '/_nuxt/img',
+    //     },
+    //   })
+    // },
+  },
 }

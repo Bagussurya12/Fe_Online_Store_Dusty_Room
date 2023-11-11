@@ -1,6 +1,6 @@
 export const state = () => ({
   products: [],
-  categories: [{ _id: false, title: 'All-Products' }],
+  categories: [{ _id: 0, title: 'All-Products' }],
   categoryId: 0,
 })
 export const mutations = {

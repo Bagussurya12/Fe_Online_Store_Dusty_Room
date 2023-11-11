@@ -1,70 +1,63 @@
 <template>
   <v-row>
-    <v-col cols="10" offset="1" md="4" offset-md="4" class="mt-5">
-      <v-card class="mb-3">
-        <v-toolbar color="black" dark>Register</v-toolbar>
-        <v-card-text>
-          <v-form>
+    <v-col cols="10" offset="1" md="4" offset-md="4">
+      <v-card>
+        <v-toolbar color="black" dark> Edit Profile </v-toolbar>
+        <v-card-text color="black" dark>
+          <v-breadcrumbs :items="breadCrumbs" class="pa-0"></v-breadcrumbs>
+          <v-form ref="form">
             <v-text-field
-              name="fullname"
-              label="Nama"
+              name="name"
+              label="Full name"
               type="text"
               color="black"
-              light
               :rules="rules.fullname"
               v-model="form.fullname"
+              light
             />
             <v-text-field
               name="email"
-              label="Email"
+              label="E-mail"
               type="email"
               color="black"
-              light
               :rules="rules.email"
               v-model="form.email"
-              @keydown="checkEmaiExist"
+              @keydown="checkEmailExist"
+              light
             />
             <v-text-field
               name="phoneNumber"
-              label="Nomor Handphone"
+              label="Phone number"
               type="number"
               color="black"
-              light
               :rules="rules.phoneNumber"
               v-model="form.phoneNumber"
+              light
             />
-
             <v-text-field
               name="password"
               label="Password"
               type="password"
               color="black"
-              light
               :rules="rules.password"
               v-model="form.password"
+              light
             />
             <v-text-field
               name="retype_password"
               label="Re-password"
               type="password"
               color="black"
-              light
               :rules="rules.retype_password"
               v-model="form.retype_password"
+              light
             />
           </v-form>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn
-            color="black"
-            dark
-            @click="onSubmit"
-            :disabled="isDisable"
-            block
-            class="mb-5"
-          >
-            <span v-if="!isDisable">Register</span>
+          <v-btn color="black" dark @click="onSubmit" :disabled="isDisable">
+            <span v-if="!isDisable">Save</span>
             <v-progress-circular
               v-else
               color="black"
@@ -73,25 +66,40 @@
           </v-btn>
         </v-card-actions>
       </v-card>
-      <p>
-        Kamu Sudah Memiliki Akun?
-        <v-btn to="/login" plain class="text-btn">Login</v-btn>
-      </p>
     </v-col>
   </v-row>
 </template>
+
 <script>
+import axios from 'axios'
+import { mapGetters } from 'vuex'
 export default {
-  middleware: ['unauthenticated'],
+  middleware: ['authenticated'],
+  asyncData({ params }) {
+    return {
+      id: params.id,
+    }
+  },
   data() {
     return {
-      emailExist: false,
+      breadCrumbs: [
+        {
+          text: 'Profile',
+          disabled: false,
+          to: '/profile',
+          exact: true,
+        },
+        {
+          text: 'Edit Profile',
+          disabled: true,
+        },
+      ],
       isDisable: false,
+      emailExist: false,
       form: {
         fullname: '',
         email: '',
         phoneNumber: '',
-        addres: '',
         password: '',
         retype_password: '',
       },
@@ -103,11 +111,12 @@ export default {
           (v) => !this.emailExist || this.$t('EMAIL_EXIST'),
         ],
         phoneNumber: [(v) => !!v || this.$t('Phone_Number_Is_Required')],
-
         password: [
-          (v) => !!v || this.$t('Password_Is_Required'),
+          (v) => v.length == 0 || !!v || this.$t('Password_Is_Required'),
           (v) =>
-            v.length >= 7 || this.$t('Password_Must_Be_at_Least_7_Character'),
+            v.length == 0 ||
+            v.length >= 7 ||
+            this.$t('Password_Must_Be_at_Least_7_Character'),
         ],
         retype_password: [
           (v) =>
@@ -118,28 +127,62 @@ export default {
     }
   },
   methods: {
-    checkEmaiExist() {
+    fetchProfile() {
+      const userId = this.user.id
+      this.$axios
+        .$get(`users/profile/${this.user.id}`)
+        .then((response) => {
+          this.form.fullname = response.User.fullname
+          this.form.email = response.User.email
+          this.form.phoneNumber = response.User.phoneNumber
+        })
+        .catch((error) => {})
+    },
+    checkEmailExist() {
       this.emailExist = false
     },
     onSubmit() {
-      ;(this.isDisable = true),
+      if (this.$refs.form.validate()) {
+        this.isDisable = true
         this.$axios
-          .$post('/auth/register', this.form)
+          .$put(`/users/${this.user.id}`, this.form)
           .then((response) => {
             this.isDisable = false
-            // REDIRECT TO LOGIN PAGE
-            this.$router.push('/login')
+
+            // Redirect To Users Page
+            this.$router.push({
+              name: 'profile___' + this.$i18n.locale,
+              params: {
+                message: 'UPDATE_SUCCESS',
+                fullname: this.form.fullname,
+              },
+            })
           })
           .catch((error) => {
+            if (error.response.data.message == 'EMAIL_EXIST') {
+              this.emailExist = true
+              this.$refs.form.validate()
+            }
             this.isDisable = false
           })
+      }
     },
+  },
+  computed: {
+    ...mapGetters('auth', {
+      authenticated: 'authenticated',
+      user: 'user',
+    }),
+  },
+  mounted() {
+    this.fetchProfile()
   },
 }
 </script>
-
 <style>
-.text-btn {
-  font-weight: bold;
+.itemProfile {
+  margin-top: 0;
+  padding-top: 0;
+  color: black;
 }
 </style>
